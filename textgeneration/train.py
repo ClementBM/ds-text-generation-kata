@@ -76,22 +76,29 @@ def build_model(dictionary: DictionarySchema, max_n_gram: int):
 
 def build_n_gram_model(dictionary: DictionarySchema, max_n_gram: int):
     model: dict = {}
-    for ngram in dictionary.gram_frequencies.keys():
-        if len(ngram) == max_n_gram - 1:
+    for ngram, freq in dictionary.gram_frequencies.items():
+        if len(ngram) == max_n_gram - 1 and freq >= 6:
             model[ngram] = {}
 
     for ngram, freq in dictionary.gram_frequencies.items():
-        if len(ngram) == max_n_gram and freq < 6:
+        if len(ngram) == max_n_gram and freq >= 6:
             model[ngram[:-1]][ngram[-1]] = freq
 
+    n_gram_to_delete = []
     for ngram, probs in model.items():
         total_count = sum(probs.values())
+        if total_count == 0:
+            n_gram_to_delete.append(ngram)
+
         for next_gram, freq in probs.items():
             model[ngram][next_gram] = freq / total_count
 
         model[ngram] = dict(
             sorted(model[ngram].items(), key=lambda item: item[1], reverse=True)
         )
+
+    for ngram in n_gram_to_delete:
+        del model[ngram]
 
     return model
 
@@ -157,5 +164,4 @@ if __name__ == "__main__":
     """
     poetry run python textgeneration/train.py textgeneration/example_jsons/training.json
     """
-    main_train(file_str_path="textgeneration/example_jsons/training.json")
-    # main_train(file_str_path=argv[1])
+    main_train(file_str_path=argv[1])
