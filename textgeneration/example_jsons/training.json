@@ -1,0 +1,5 @@
+{
+  "trained_model": "./artefacts/models/",
+  "max_n_gram": 3,
+  "input_folder": "./artefacts/corpus/"
+}

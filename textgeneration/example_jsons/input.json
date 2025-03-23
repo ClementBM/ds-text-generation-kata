@@ -1,0 +1,7 @@
+{
+  "trained_model": "./artefacts/models/",
+  "max_n_gram": 3,
+  "texts": [""],
+  "output_file": "./artefacts/text_generations/",
+  "use_top_candidate": 10
+}
